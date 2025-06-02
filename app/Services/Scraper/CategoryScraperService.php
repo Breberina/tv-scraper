@@ -3,15 +3,21 @@
 namespace App\Services\Scraper;
 
 use App\Models\Category;
+use App\Services\CategoryService;
 use App\Services\ImageService;
 use App\Services\SlugService;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 
 class CategoryScraperService
 {
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function scrapeCategories(): void
     {
         logger()->info('start');
@@ -47,16 +53,18 @@ class CategoryScraperService
                     return;
                 }
 
-                $category = Category::firstOrCreate(
-                    ['verbose_id' => $verboseId],
-                    [
-                        'url' => $url,
-                        'title' => $title,
-                        'image' => $image,
-                    ]
-                );
+                $category = $this->categoryService->storeFromScraper([
+                    'verbose_id' => $verboseId,
+                    'url' => $url,
+                    'title' => $title,
+                    'image' => $image,
+                ]);
 
-                logger()->info("Sačuvana kategorija: {$category->title}");
+                if ($category) {
+                    logger()->info("Sačuvana kategorija: {$category->title}");
+                } else {
+                    logger()->warning("Kategorija nije sačuvana: $title");
+                }
 
             } catch (\Throwable $e) {
                 logger()->error("Greška u parsiranju kategorije #$index: {$e->getMessage()}");
