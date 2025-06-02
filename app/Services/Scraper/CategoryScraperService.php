@@ -2,6 +2,7 @@
 
 namespace App\Services\Scraper;
 
+use App\Jobs\ScrapeCategoryProductsJob;
 use App\Models\Category;
 use App\Services\CategoryService;
 use App\Services\ImageService;
@@ -47,6 +48,8 @@ class CategoryScraperService
                 $image = ImageService::downloadImage($imageExternalUrl, $title, 'categories');
                 $verboseId = Str::slug($title, '-');
                 $url = SlugService::generateUniqueSlug($title, Category::class, 'url');
+                $targetHref = $node->filter('a')->attr('href');
+                $productsUrl = 'https://www.shoptok.si' . $targetHref;
 
                 if (empty($title) || empty($image)) {
                     logger()->warning("Nepotpuni podaci kategorija #$index preskočena.");
@@ -62,12 +65,14 @@ class CategoryScraperService
 
                 if ($category) {
                     logger()->info("Sačuvana kategorija: {$category->title}");
+                    dispatch(new ScrapeCategoryProductsJob($category, $productsUrl));
+
                 } else {
                     logger()->warning("Kategorija nije sačuvana: $title");
                 }
 
             } catch (\Throwable $e) {
-                logger()->error("Greška u parsiranju kategorije #$index: {$e->getMessage()}");
+                logger()->error("Greška u parsiranju kategorije #$index: {$e->getMessage()}".  $e->getFile().':' . $e->getLine());
             }
         });
     }
