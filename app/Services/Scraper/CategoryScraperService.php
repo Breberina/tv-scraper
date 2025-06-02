@@ -18,18 +18,7 @@ class CategoryScraperService
         $client = HttpClient::create();
         $url = 'https://www.shoptok.si/tv-prijamnici/cene/56';
 
-
         $response = $client->request('GET', $url);
-        $html = $response->getContent();
-        file_put_contents(storage_path('shoptok.html'), $html);
-
-        $crawler = new Crawler($html);
-        $elements = $crawler->filter('.category_desktop_subcategories_l3_module .col-4');
-        logger()->info('Pronađeno elemenata: ' . $elements->count());
-
-
-        $response = $client->request('GET', $url);
-
         $html = $response->getContent();
         $crawler = new Crawler($html);
 
