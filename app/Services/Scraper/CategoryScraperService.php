@@ -3,6 +3,7 @@
 namespace App\Services\Scraper;
 
 use App\Models\Category;
+use App\Services\ImageService;
 use App\Services\SlugService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
@@ -36,7 +37,8 @@ class CategoryScraperService
                 }
 
                 $title = trim($titleNode->text());
-                $image = $imageNode->attr('srcset');
+                $imageExternalUrl = $imageNode->attr('srcset');
+                $image = ImageService::downloadImage($imageExternalUrl, $title, 'categories');
                 $verboseId = Str::slug($title, '-');
                 $url = SlugService::generateUniqueSlug($title, Category::class, 'url');
 
