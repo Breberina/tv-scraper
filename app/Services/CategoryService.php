@@ -2,6 +2,8 @@
 
 namespace App\Services;
 use App\Models\Category;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryService
 {
@@ -16,5 +18,12 @@ class CategoryService
                 'image' => $data['image'],
             ]
         );
+    }
+
+    public function getAllCategories(): Collection
+    {
+        return Cache::remember('all_categories', now()->addHours(2), function () {
+            return Category::orderBy('title')->get();
+        });
     }
 }
