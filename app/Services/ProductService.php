@@ -23,7 +23,7 @@ class ProductService
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($categoryId, $perPage, $page) {
             return Product::where('category_id', $categoryId)
-                ->where('active')
+                ->where('active', true)
                 ->orderBy('title')
                 ->paginate($perPage, ['*'], 'page', $page);
         });

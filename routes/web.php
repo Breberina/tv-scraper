@@ -7,3 +7,5 @@ Route::get('/', [ProductController::class, 'index'])->name('products.index');
 
 Route::get('/product/:id', [ProductController::class, 'index'])->name('products.show');
 
+Route::get('/category/{category_name}', [ProductController::class, 'getCategoryProducts'])->name('products-category.show');
+

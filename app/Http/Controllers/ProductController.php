@@ -26,4 +26,16 @@ class ProductController
 
         return view('products.index', compact('products', 'categories'));
     }
+
+    public function getCategoryProducts(Request $request, $category_name)
+    {
+        $categories = $this->categoryService->getAllCategories();
+        $category = $this->categoryService->getCategoryByVerboseId($category_name);
+
+        $page = $request->get('page', 1);
+        $products = $this->productService->getPaginatedProductsByCategory($category->id, 20, $page);
+
+        return view('products.index', compact('products', 'categories'));
+    }
+
 }

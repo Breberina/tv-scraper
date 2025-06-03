@@ -26,4 +26,11 @@ class CategoryService
             return Category::orderBy('title')->get();
         });
     }
+
+    public function getCategoryByVerboseId(string $verboseId): ?Category
+    {
+        return Cache::remember("category_by_name_{$verboseId}", now()->addHours(2), function () use ($verboseId) {
+            return Category::where('verbose_id', $verboseId)->first();
+        });
+    }
 }
