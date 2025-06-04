@@ -6,7 +6,7 @@ use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 
-class ProductController
+class ProductController extends Controller
 {
     protected ProductService $productService;
     protected CategoryService $categoryService;
@@ -36,6 +36,11 @@ class ProductController
         $products = $this->productService->getPaginatedProductsByCategory($category->id, 20, $page);
 
         return view('products.index', compact('products', 'categories'));
+    }
+
+    public function productsVue()
+    {
+        return view('products.index-vue');
     }
 
 }
