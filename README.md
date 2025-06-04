@@ -23,7 +23,6 @@ git clone <https://github.com/Breberina/tv-scraper.git>
 cd tv-scraper
 composer install
 cp .env.example .env
-php artisan key:generate
 ```
 
 ### 2. Start the development environment with Sail
