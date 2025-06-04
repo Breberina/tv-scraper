@@ -57,6 +57,13 @@ The scraping system runs in two layers of jobs:
 
 This will dispatch queued jobs. Make sure the queue worker is running.
 
+## Storage
+
+```bash
+./vendor/bin/sail artisan storage:link
+```
+
+
 ## Frontend
 `To run the frontend, you need to install Node.js dependencies and build the assets.`
 
